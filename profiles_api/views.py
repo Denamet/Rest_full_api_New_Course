@@ -2,6 +2,8 @@ from rest_framework.views import APIView
 from rest_framework import response , status
 from django.shortcuts import render
 from . import serializers
+from django.views import View
+from rest_framework.viewsets import ViewSet
 
 
 
@@ -52,34 +54,70 @@ class Hello_Api(APIView):
 
 
 
-def calculator(request):
-
-   
 
 
-    result = None
-    error_message = None
+class HelloViewSet(ViewSet):
 
-    if request.method == 'POST':
-        try:
-            num1 = float(request.POST.get('num1', 0))
-            num2 = float(request.POST.get('num2', 0))
-            operator = request.POST.get('operator')
+    
+    serliesers_class = serializers.hello_serializers
 
-            if operator == '+':
-                result = num1 + num2
-            elif operator == '-':
-                result = num1 - num2
-            elif operator == '*':
-                result = num1 * num2
-            elif operator == '/':
-                if num2 != 0:
-                    result = num1 / num2
-                else:
-                    error_message = "Cannot divide by zero!"
-            else:
-                error_message = "Invalid operator!"
-        except ValueError:
-            error_message = "Invalid input!"
+    """Test API ViewSet"""
 
-    return render(request, 'Calculator.html' , {'result': result, 'error_message': error_message})
+    def list(self, request):
+        """Return a hello message."""
+
+        a_viewset = [
+            'Uses actions (list, create, retrieve, update, partial_update)',
+            'Automatically maps to URLS using Routers',
+            'Provides more functionality with less code',
+        ]
+
+        return response.Response({'message': 'Hello!', 'a_viewset': a_viewset})
+    
+
+    def create(self , request ):
+       
+
+        print(request.method)
+        print(request.data)
+        print(type(request.data))
+        
+        
+        serializer = self.serliesers_class(data=request.data)
+        if serializer.is_valid():
+            name = serializer.validated_data.get("name")
+            return response.Response({"massge":"hello "+name } )
+        
+        
+        else :
+            return response.Response({"massge":"please Type data valid "})
+            
+
+
+    def retrieve(self , request , pk=None):
+        print(pk)
+        return response.Response({"http_method":"GET" , "pk" : pk})
+    
+
+
+    def update(self , request , pk=None ):
+        print(pk)
+        return response.Response({"http_method":"PUT" , "pk" : pk})
+
+
+
+
+
+    def partial_update(self , request , pk=None ):
+            print(pk)
+            return response.Response({"http_method":"PATCH" , "pk" : pk})
+
+
+
+    def destroy(self , request , pk=None ):
+        print(pk)
+        return response.Response({"http_method":"DELETE" , "pk" : pk})
+
+
+
+

@@ -1,13 +1,18 @@
-from django.urls import path
+from django.urls import path , include
 from profiles_api import views
 from django.shortcuts import render
+from rest_framework.routers import DefaultRouter
+
+
+router = DefaultRouter()
+router.register('hello-viewset', views.HelloViewSet, basename='hello-viewset')
 
 
 urlpatterns = [
     
     path('hello' , views.Hello_Api.as_view()),
-    path('calculator/', views.calculator, name='calculator'),
-    path('test/', lambda request: render(request, 'test.html')),
+    path('', include(router.urls))
+
 
 
 
