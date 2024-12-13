@@ -1,10 +1,14 @@
 from rest_framework.views import APIView
 from rest_framework import response , status
 from django.shortcuts import render
-from . import serializers
+from . import serializers 
 from django.views import View
 from rest_framework.viewsets import ViewSet
-
+from . import models
+from rest_framework import viewsets
+from rest_framework.viewsets import ModelViewSet
+from profiles_api import permissions 
+from rest_framework.authentication import TokenAuthentication  
 
 
 class Hello_Api(APIView):
@@ -47,7 +51,6 @@ class Hello_Api(APIView):
 
     def delete(self , request , pk=None):
         return response.Response({"method":"delete"})
-
 
 
 
@@ -117,6 +120,18 @@ class HelloViewSet(ViewSet):
     def destroy(self , request , pk=None ):
         print(pk)
         return response.Response({"http_method":"DELETE" , "pk" : pk})
+
+
+
+
+
+
+class UserProfileViewSet(viewsets.ModelViewSet):
+    """Handle creating, creating and updating profiles"""
+    serializer_class = serializers.Userprofileserilazer
+    queryset = models.User_profiels.objects1.all()
+    authentication_classes = (TokenAuthentication , ) 
+    permission_classes = (permissions.UpdateOwnProfile,)
 
 
 
